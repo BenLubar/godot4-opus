@@ -8,9 +8,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target:
-          - template_release
-          - template_debug
+        target: [template_release, template_debug]
         include:
           - platform: linux
             arch: x86_32
@@ -49,10 +47,10 @@ jobs:
             arch: arm64
             os: macos-latest
           - platform: web
-            arch: wasm32 threads=yes
+            arch: 'wasm32 threads=yes'
             os: ubuntu-latest
           - platform: web
-            arch: wasm32 threads=no
+            arch: 'wasm32 threads=no'
             os: ubuntu-latest
 
     runs-on: ${{ matrix.os }}
