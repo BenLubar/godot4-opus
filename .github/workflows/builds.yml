@@ -170,5 +170,5 @@ jobs:
         uses: actions/upload-artifact/merge@v4
         with:
           name: godot4-opus
-          pattern: godot-opus-*
+          pattern: godot4-opus-*
           delete-merged: true
