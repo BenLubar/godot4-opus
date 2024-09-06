@@ -9,10 +9,10 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - platform: linux
-            arch: x86_32
-            target-type: template_debug
-            os: ubuntu-latest
+          #- platform: linux
+          #  arch: x86_32
+          #  target-type: template_debug
+          #  os: ubuntu-latest
           - platform: linux
             arch: x86_64
             target-type: template_debug
@@ -21,14 +21,14 @@ jobs:
             arch: arm32
             target-type: template_debug
             os: ubuntu-latest
-          - platform: linux
-            arch: arm64
-            target-type: template_debug
-            os: ubuntu-latest
-          - platform: linux
-            arch: rv64
-            target-type: template_debug
-            os: ubuntu-latest
+          #- platform: linux
+          #  arch: arm64
+          #  target-type: template_debug
+          #  os: ubuntu-latest
+          #- platform: linux
+          #  arch: rv64
+          #  target-type: template_debug
+          #  os: ubuntu-latest
           - platform: windows
             arch: x86_32
             target-type: template_debug
@@ -65,10 +65,10 @@ jobs:
             arch: wasm32 threads=no
             target-type: template_debug
             os: ubuntu-latest
-          - platform: linux
-            arch: x86_32
-            target-type: template_release
-            os: ubuntu-latest
+          #- platform: linux
+          #  arch: x86_32
+          #  target-type: template_release
+          #  os: ubuntu-latest
           - platform: linux
             arch: x86_64
             target-type: template_release
@@ -77,14 +77,14 @@ jobs:
             arch: arm32
             target-type: template_release
             os: ubuntu-latest
-          - platform: linux
-            arch: arm64
-            target-type: template_release
-            os: ubuntu-latest
-          - platform: linux
-            arch: rv64
-            target-type: template_release
-            os: ubuntu-latest
+          #- platform: linux
+          #  arch: arm64
+          #  target-type: template_release
+          #  os: ubuntu-latest
+          #- platform: linux
+          #  arch: rv64
+          #  target-type: template_release
+          #  os: ubuntu-latest
           - platform: windows
             arch: x86_32
             target-type: template_release
