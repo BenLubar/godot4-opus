@@ -8,7 +8,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [template_release, template_debug]
+        target-type: [template_release, template_debug]
         include:
           - platform: linux
             arch: x86_32
@@ -47,10 +47,10 @@ jobs:
             arch: arm64
             os: macos-latest
           - platform: web
-            arch: 'wasm32 threads=yes'
+            arch: wasm32 threads=yes
             os: ubuntu-latest
           - platform: web
-            arch: 'wasm32 threads=no'
+            arch: wasm32 threads=no
             os: ubuntu-latest
 
     runs-on: ${{ matrix.os }}
@@ -65,7 +65,7 @@ jobs:
         with:
           platform: ${{ matrix.platform }}
           arch: ${{ matrix.arch }}
-          build-target-type: ${{ matrix.target }}
+          build-target-type: ${{ matrix.target-type }}
       - name: Mac Sign
         if: ${{ matrix.platform == 'macos' && env.APPLE_CERT_BASE64 }}
         env:
@@ -87,14 +87,14 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: godot4-opus-${{ matrix.platform }}-${{ matrix.arch }}-${{ matrix.float-precision }}-${{ matrix.target-type }}
+          name: godot4-opus-${{ matrix.platform }}-${{ matrix.arch }}-${{ matrix.target-type }}
           path: |
             ${{ github.workspace }}/bin/**
 
-  # Merges all the build artifacts together into a single godot-cpp-template artifact.
+  # Merges all the build artifacts together into a single godot4-opus artifact.
   # If you comment out this step, all the builds will be uploaded individually.
   merge:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     needs: build
     steps:
       - name: Merge Artifacts
