@@ -1,9 +1,9 @@
 # Godot 4+ specific ignores
 .godot/
-export
-addons/**/~*.dll
+demo/bin/
 .sconsign.dblite
 *.obj
+*.os
 
 # Visual-studio related
 .vs

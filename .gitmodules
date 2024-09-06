@@ -1,4 +1,16 @@
 [submodule "godot-cpp"]
 	path = godot-cpp
 	url = https://github.com/godotengine/godot-cpp
-	branch = 4.2
+	branch = 4.3
+[submodule "3rdparty/opus"]
+	path = 3rdparty/opus
+	url = https://gitlab.xiph.org/xiph/opus.git
+[submodule "3rdparty/libopusenc"]
+	path = 3rdparty/libopusenc
+	url = https://gitlab.xiph.org/xiph/libopusenc.git
+[submodule "3rdparty/opusfile"]
+	path = 3rdparty/opusfile
+	url = https://gitlab.xiph.org/xiph/opusfile.git
+[submodule "3rdparty/ogg"]
+	path = 3rdparty/ogg
+	url = https://gitlab.xiph.org/xiph/ogg.git
