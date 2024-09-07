@@ -23,7 +23,7 @@
 			<param index="0" name="audio" type="AudioStreamWAV" />
 			<description>
 				Returns a [PackedByteArray] containing the bytes of an .ogg file containing a single Opus stream containing [param audio]. Returns an empty [PackedByteArray] if the conversion fails.
-				[b]Note:[/b] Only [code]FORMAT_8_BITS[/code] or [code]FORMAT_16_BITS[/code] audio streams can be encoded by this method.
+				[b]Note:[/b] Only [constant AudioStreamWAV.FORMAT_8_BITS] or [constant AudioStreamWAV.FORMAT_16_BITS] audio streams can be encoded by this method.
 				[b]Note:[/b] Looping audio streams are not supported and will be exported without the loop data.
 			</description>
 		</method>

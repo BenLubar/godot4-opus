@@ -135,6 +135,7 @@ jobs:
           platform: ${{ matrix.platform }}
           arch: ${{ matrix.arch }}
           build-target-type: ${{ matrix.target-type }}
+          em_version: 3.1.62 # temp https://github.com/godotengine/godot-cpp/pull/1566
       - name: Mac Sign
         if: ${{ matrix.platform == 'macos' && env.APPLE_CERT_BASE64 }}
         env:
