@@ -11,27 +11,18 @@
 
 using namespace godot;
 
-static const StringName opus_stringname = "Opus";
-static Opus *opus_singleton = nullptr;
-
 void initialize_gdopus_module(ModuleInitializationLevel p_level) {
 	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) {
 		return;
 	}
 
 	GDREGISTER_CLASS(Opus);
-	ClassDB::register_class<Opus>();
-	opus_singleton = memnew(Opus);
-	Engine::get_singleton()->register_singleton(opus_stringname, opus_singleton);
 }
 
 void uninitialize_gdopus_module(ModuleInitializationLevel p_level) {
 	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) {
 		return;
 	}
-
-	Engine::get_singleton()->unregister_singleton(opus_stringname);
-	memdelete(opus_singleton);
 }
 
 extern "C" {

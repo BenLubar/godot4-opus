@@ -1,8 +1,10 @@
 # Godot 4+ specific ignores
 .godot/
-demo/bin/
+bin/
+src/gen/
 .sconsign.dblite
 *.obj
+*.o
 *.os
 
 # Visual-studio related

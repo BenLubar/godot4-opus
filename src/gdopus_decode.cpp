@@ -11,7 +11,7 @@ AudioStreamWAV *Opus::decode(const PackedByteArray &data) {
 	OggOpusFile *file = op_open_memory(data.ptr(), data.size(), nullptr);
 	if (!file) {
 		// TODO: better error handling
-		WARN_PRINT("Opus.decode encountered error");
+		ERR_PRINT("Opus.decode encountered error");
 
 		return nullptr;
 	}
@@ -30,7 +30,7 @@ AudioStreamWAV *Opus::decode(const PackedByteArray &data) {
 			op_read(file, reinterpret_cast<opus_int16 *>(buf.ptrw()), samples_per_buffer, nullptr)) {
 		if (sample_count < 0) {
 			// TODO: better error handling
-			WARN_PRINT("Opus.decode encountered error");
+			ERR_PRINT("Opus.decode encountered error");
 
 			op_free(file);
 

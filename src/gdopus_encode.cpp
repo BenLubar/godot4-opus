@@ -25,7 +25,7 @@ const static OpusEncCallbacks callbacks = {
 
 PackedByteArray Opus::encode(AudioStreamWAV *audio) {
 	if (!audio) {
-		WARN_PRINT("Opus.encode(null) called");
+		ERR_PRINT("Opus.encode(null) called");
 		return PackedByteArray();
 	}
 
@@ -46,7 +46,7 @@ PackedByteArray Opus::encode(AudioStreamWAV *audio) {
 	} else if (audio->get_format() == AudioStreamWAV::FORMAT_16_BITS) {
 		pinput = &input;
 	} else {
-		WARN_PRINT("Opus.encode can only handle FORMAT_8_BITS and FORMAT_16_BITS.");
+		ERR_PRINT("Opus.encode can only handle FORMAT_8_BITS and FORMAT_16_BITS.");
 		return PackedByteArray();
 	}
 
