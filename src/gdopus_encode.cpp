@@ -24,10 +24,8 @@ const static OpusEncCallbacks callbacks = {
 };
 
 PackedByteArray Opus::encode(AudioStreamWAV *audio) {
-	if (!audio) {
-		ERR_PRINT("Opus.encode(null) called");
-		return PackedByteArray();
-	}
+	ERR_FAIL_NULL_V(audio, PackedByteArray());
+	ERR_FAIL_COND_V_MSG(audio->get_format() != AudioStreamWAV::FORMAT_8_BITS && audio->get_format() != AudioStreamWAV::FORMAT_16_BITS, PackedByteArray(), "Opus.encode can only handle FORMAT_8_BITS and FORMAT_16_BITS.");
 
 	PackedByteArray input = audio->get_data();
 	PackedByteArray auxiliary;
@@ -43,18 +41,18 @@ PackedByteArray Opus::encode(AudioStreamWAV *audio) {
 			auxiliary[i * 2 + 1] = input[i];
 		}
 		pinput = &auxiliary;
-	} else if (audio->get_format() == AudioStreamWAV::FORMAT_16_BITS) {
-		pinput = &input;
 	} else {
-		ERR_PRINT("Opus.encode can only handle FORMAT_8_BITS and FORMAT_16_BITS.");
-		return PackedByteArray();
+		pinput = &input;
 	}
 
 	PackedByteArray buf;
-	OggOpusEnc *encoder = ope_encoder_create_callbacks(&callbacks, &buf, nullptr, audio->get_mix_rate(), audio->is_stereo() ? 2 : 1, 0, nullptr);
+	OggOpusComments *comment = ope_comments_create();
+	OggOpusEnc *encoder = ope_encoder_create_callbacks(&callbacks, &buf, comment, audio->get_mix_rate(), audio->is_stereo() ? 2 : 1, 0, nullptr);
+	ERR_FAIL_COND_V_MSG(!encoder, PackedByteArray(), "Failed to create Opus encoder.");
 	ope_encoder_write(encoder, reinterpret_cast<const opus_int16 *>(pinput->ptr()), pinput->size() / (audio->is_stereo() ? 4 : 2));
 	ope_encoder_drain(encoder);
 	ope_encoder_destroy(encoder);
+	ope_comments_destroy(comment);
 
 	return buf;
 }

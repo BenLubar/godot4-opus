@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="Opus" inherits="Object" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		Singleton that converts OGG/Opus audio file data to and from [AudioStreamWAV].
+	</brief_description>
+	<description>
+		The Opus singleton converts OGG/Opus audio file data to and from [AudioStreamWAV]. This allows Godot to read and write .ogg files containing Opus audio streams at runtime.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="decode" qualifiers="static">
+			<return type="int" enum="Error" />
+			<param index="0" name="data" type="PackedByteArray" />
+			<param index="1" name="audio" type="AudioStreamWAV" />
+			<description>
+				Decodes the [param data], which should be the bytes of an .ogg file containing an Opus audio stream, into [param audio].
+				[b]Note:[/b] If there are more than two channels, the audio will be downmixed to stereo.
+			</description>
+		</method>
+		<method name="encode" qualifiers="static">
+			<return type="PackedByteArray" />
+			<param index="0" name="audio" type="AudioStreamWAV" />
+			<description>
+				Returns a [PackedByteArray] containing the bytes of an .ogg file containing a single Opus stream containing [param audio]. Returns an empty [PackedByteArray] if the conversion fails.
+				[b]Note:[/b] Only [AudioStreamWAV.FORMAT_8_BITS] or [AudioStreamWAV.FORMAT_16_BITS] audio streams can be encoded by this method.
+				[b]Note:[/b] Looping audio streams are not supported and will be exported without the loop data.
+			</description>
+		</method>
+	</methods>
+</class>

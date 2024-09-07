@@ -13,7 +13,7 @@ class Opus : public Object {
 protected:
 	static void _bind_methods();
 
-	static AudioStreamWAV *decode(const PackedByteArray &data);
+	static Error decode(const PackedByteArray &data, AudioStreamWAV *audio);
 	static PackedByteArray encode(AudioStreamWAV *audio);
 };
 
