@@ -153,7 +153,7 @@ jobs:
         if: ${{ matrix.platform == 'windows' }}
         shell: pwsh
         run: |
-          Remove-Item bin/* -Include *.exp,*.lib,*.pdb -Force
+          Remove-Item bin/windows/* -Include *.exp,*.lib,*.pdb -Force
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
