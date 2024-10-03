@@ -12,35 +12,35 @@ jobs:
           #- platform: linux
           #  arch: x86_32
           #  target-type: template_debug
-          #  os: ubuntu-latest
+          #  os: ubuntu-20.04
           - platform: linux
             arch: x86_64
             target-type: template_debug
-            os: ubuntu-latest
+            os: ubuntu-20.04
           - platform: linux
             arch: arm32
             target-type: template_debug
-            os: ubuntu-latest
+            os: ubuntu-20.04
           #- platform: linux
           #  arch: arm64
           #  target-type: template_debug
-          #  os: ubuntu-latest
+          #  os: ubuntu-20.04
           #- platform: linux
           #  arch: rv64
           #  target-type: template_debug
-          #  os: ubuntu-latest
+          #  os: ubuntu-20.04
           - platform: windows
             arch: x86_32
             target-type: template_debug
-            os: windows-latest
+            os: windows-2019
           - platform: windows
             arch: x86_64
             target-type: template_debug
-            os: windows-latest
+            os: windows-2019
           - platform: windows
             arch: arm64
             target-type: template_debug
-            os: windows-latest
+            os: windows-2019
           - platform: macos
             arch: universal
             target-type: template_debug
@@ -48,11 +48,11 @@ jobs:
           - platform: android
             arch: x86_64
             target-type: template_debug
-            os: ubuntu-latest
+            os: ubuntu-20.04
           - platform: android
             arch: arm64
             target-type: template_debug
-            os: ubuntu-latest
+            os: ubuntu-20.04
           - platform: ios
             arch: arm64
             target-type: template_debug
@@ -60,43 +60,43 @@ jobs:
           - platform: web
             arch: wasm32 threads=yes
             target-type: template_debug
-            os: ubuntu-latest
+            os: ubuntu-20.04
           - platform: web
             arch: wasm32 threads=no
             target-type: template_debug
-            os: ubuntu-latest
+            os: ubuntu-20.04
           #- platform: linux
           #  arch: x86_32
           #  target-type: template_release
-          #  os: ubuntu-latest
+          #  os: ubuntu-20.04
           - platform: linux
             arch: x86_64
             target-type: template_release
-            os: ubuntu-latest
+            os: ubuntu-20.04
           - platform: linux
             arch: arm32
             target-type: template_release
-            os: ubuntu-latest
+            os: ubuntu-20.04
           #- platform: linux
           #  arch: arm64
           #  target-type: template_release
-          #  os: ubuntu-latest
+          #  os: ubuntu-20.04
           #- platform: linux
           #  arch: rv64
           #  target-type: template_release
-          #  os: ubuntu-latest
+          #  os: ubuntu-20.04
           - platform: windows
             arch: x86_32
             target-type: template_release
-            os: windows-latest
+            os: windows-2019
           - platform: windows
             arch: x86_64
             target-type: template_release
-            os: windows-latest
+            os: windows-2019
           - platform: windows
             arch: arm64
             target-type: template_release
-            os: windows-latest
+            os: windows-2019
           - platform: macos
             arch: universal
             target-type: template_release
@@ -104,11 +104,11 @@ jobs:
           - platform: android
             arch: x86_64
             target-type: template_release
-            os: ubuntu-latest
+            os: ubuntu-20.04
           - platform: android
             arch: arm64
             target-type: template_release
-            os: ubuntu-latest
+            os: ubuntu-20.04
           - platform: ios
             arch: arm64
             target-type: template_release
@@ -116,11 +116,11 @@ jobs:
           - platform: web
             arch: wasm32 threads=yes
             target-type: template_release
-            os: ubuntu-latest
+            os: ubuntu-20.04
           - platform: web
             arch: wasm32 threads=no
             target-type: template_release
-            os: ubuntu-latest
+            os: ubuntu-20.04
 
     runs-on: ${{ matrix.os }}
     steps:
@@ -135,7 +135,6 @@ jobs:
           platform: ${{ matrix.platform }}
           arch: ${{ matrix.arch }}
           build-target-type: ${{ matrix.target-type }}
-          em_version: 3.1.62 # temp https://github.com/godotengine/godot-cpp/pull/1566
       - name: Mac Sign
         if: ${{ matrix.platform == 'macos' && env.APPLE_CERT_BASE64 }}
         env:
@@ -164,7 +163,7 @@ jobs:
   # Merges all the build artifacts together into a single godot4-opus artifact.
   # If you comment out this step, all the builds will be uploaded individually.
   merge:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     needs: build
     steps:
       - name: Merge Artifacts

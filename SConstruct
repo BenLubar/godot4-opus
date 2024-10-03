@@ -9,10 +9,6 @@ projectdir = "demo"
 env.Append(CPPPATH=["src/"])
 sources = Glob("src/*.cpp")
 
-# temp https://github.com/godotengine/godot-cpp/pull/1566
-if env["platform"] == "web":
-    env.Append(LINKFLAGS=["-sWASM_BIGINT"])
-
 # alright, we're doing something sneaky here and using the Opus codec directly from its source code.
 # not a static library, not a shared library, not some other kind of library.
 # it's being compiled as part of this GDExtension directly.
