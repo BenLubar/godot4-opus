@@ -4,8 +4,9 @@
 
 using namespace godot;
 
+Opus *Opus::_singleton = nullptr;
+
 void Opus::_bind_methods() {
-	// Methods.
-	ClassDB::bind_static_method("Opus", D_METHOD("decode", "data", "audio"), &Opus::decode);
-	ClassDB::bind_static_method("Opus", D_METHOD("encode", "audio"), &Opus::encode);
+	ClassDB::bind_method(D_METHOD("decode", "data", "audio"), &Opus::decode);
+	ClassDB::bind_method(D_METHOD("encode", "audio"), &Opus::encode);
 }

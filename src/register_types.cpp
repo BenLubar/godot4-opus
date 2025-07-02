@@ -12,17 +12,24 @@
 using namespace godot;
 
 void initialize_gdopus_module(ModuleInitializationLevel p_level) {
-	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) {
+	if (p_level != MODULE_INITIALIZATION_LEVEL_SERVERS) {
 		return;
 	}
 
 	GDREGISTER_CLASS(Opus);
+
+	Opus::_singleton = memnew(Opus);
+	Engine::get_singleton()->register_singleton(Opus::get_class_static(), Opus::_singleton);
 }
 
 void uninitialize_gdopus_module(ModuleInitializationLevel p_level) {
-	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) {
+	if (p_level != MODULE_INITIALIZATION_LEVEL_SERVERS) {
 		return;
 	}
+
+	Engine::get_singleton()->unregister_singleton(Opus::get_class_static());
+	memdelete(Opus::_singleton);
+	Opus::_singleton = nullptr;
 }
 
 extern "C" {
@@ -32,7 +39,7 @@ GDExtensionBool GDE_EXPORT gdopus_library_init(GDExtensionInterfaceGetProcAddres
 
 	init_obj.register_initializer(initialize_gdopus_module);
 	init_obj.register_terminator(uninitialize_gdopus_module);
-	init_obj.set_minimum_library_initialization_level(MODULE_INITIALIZATION_LEVEL_SCENE);
+	init_obj.set_minimum_library_initialization_level(MODULE_INITIALIZATION_LEVEL_SERVERS);
 
 	return init_obj.init();
 }

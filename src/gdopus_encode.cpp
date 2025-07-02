@@ -23,17 +23,17 @@ const static OpusEncCallbacks callbacks = {
 	&close_opus,
 };
 
-PackedByteArray Opus::encode(AudioStreamWAV *audio) {
-	ERR_FAIL_NULL_V(audio, PackedByteArray());
-	ERR_FAIL_COND_V_MSG(audio->get_format() != AudioStreamWAV::FORMAT_8_BITS && audio->get_format() != AudioStreamWAV::FORMAT_16_BITS, PackedByteArray(), "Opus.encode can only handle FORMAT_8_BITS and FORMAT_16_BITS.");
+PackedByteArray Opus::encode(AudioStreamWAV *p_audio) const {
+	ERR_FAIL_NULL_V(p_audio, PackedByteArray());
+	ERR_FAIL_COND_V_MSG(p_audio->get_format() != AudioStreamWAV::FORMAT_8_BITS && p_audio->get_format() != AudioStreamWAV::FORMAT_16_BITS, PackedByteArray(), "Opus.encode can only handle FORMAT_8_BITS and FORMAT_16_BITS.");
 
-	PackedByteArray input = audio->get_data();
+	PackedByteArray input = p_audio->get_data();
 	PackedByteArray auxiliary;
 	PackedByteArray *pinput;
 
 	// opus wants 16-bit signed PCM ([-32768,32767] range, channels interleaved)
 	// we only support two of Godot's formats: signed 8 and signed 16.
-	if (audio->get_format() == AudioStreamWAV::FORMAT_8_BITS) {
+	if (p_audio->get_format() == AudioStreamWAV::FORMAT_8_BITS) {
 		auxiliary.resize(input.size() * 2);
 		// easy way to rescale 8 to 16 bit: just repeat every byte.
 		for (int64_t i = 0; i < input.size(); i++) {
@@ -47,9 +47,9 @@ PackedByteArray Opus::encode(AudioStreamWAV *audio) {
 
 	PackedByteArray buf;
 	OggOpusComments *comment = ope_comments_create();
-	OggOpusEnc *encoder = ope_encoder_create_callbacks(&callbacks, &buf, comment, audio->get_mix_rate(), audio->is_stereo() ? 2 : 1, 0, nullptr);
+	OggOpusEnc *encoder = ope_encoder_create_callbacks(&callbacks, &buf, comment, p_audio->get_mix_rate(), p_audio->is_stereo() ? 2 : 1, 0, nullptr);
 	ERR_FAIL_COND_V_MSG(!encoder, PackedByteArray(), "Failed to create Opus encoder.");
-	ope_encoder_write(encoder, reinterpret_cast<const opus_int16 *>(pinput->ptr()), pinput->size() / (audio->is_stereo() ? 4 : 2));
+	ope_encoder_write(encoder, reinterpret_cast<const opus_int16 *>(pinput->ptr()), pinput->size() / (p_audio->is_stereo() ? 4 : 2));
 	ope_encoder_drain(encoder);
 	ope_encoder_destroy(encoder);
 	ope_comments_destroy(comment);
