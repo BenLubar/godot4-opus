@@ -17,5 +17,5 @@ public:
 	godot::PackedByteArray encode(godot::AudioStreamWAV *p_audio) const;
 };
 
-void initialize_gdopus_module(ModuleInitializationLevel p_level);
-void uninitialize_gdopus_module(ModuleInitializationLevel p_level);
+void initialize_gdopus_module(godot::ModuleInitializationLevel p_level);
+void uninitialize_gdopus_module(godot::ModuleInitializationLevel p_level);
