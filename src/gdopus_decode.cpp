@@ -7,8 +7,8 @@ using namespace godot;
 // The libopusfile documentation recommends a 120ms buffer size for 48KHz data.
 constexpr int samples_per_buffer = 120 * 48 * 2;
 
-Error Opus::decode(const PackedByteArray &p_data, AudioStreamWAV *p_audio) const {
-	ERR_FAIL_NULL_V(p_audio, ERR_INVALID_PARAMETER);
+Error Opus::decode(const PackedByteArray &p_data, const Ref<godot::AudioStreamWAV> &p_audio) const {
+	ERR_FAIL_COND_V(p_audio.is_null(), ERR_INVALID_PARAMETER);
 
 	int opus_error = 0;
 	OggOpusFile *file = op_open_memory(p_data.ptr(), p_data.size(), &opus_error);

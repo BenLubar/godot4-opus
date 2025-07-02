@@ -23,8 +23,8 @@ const static OpusEncCallbacks callbacks = {
 	&close_opus,
 };
 
-PackedByteArray Opus::encode(AudioStreamWAV *p_audio) const {
-	ERR_FAIL_NULL_V(p_audio, PackedByteArray());
+PackedByteArray Opus::encode(const Ref<godot::AudioStreamWAV> &p_audio) const {
+	ERR_FAIL_COND_V(p_audio.is_null(), PackedByteArray());
 	ERR_FAIL_COND_V_MSG(p_audio->get_format() != AudioStreamWAV::FORMAT_8_BITS && p_audio->get_format() != AudioStreamWAV::FORMAT_16_BITS, PackedByteArray(), "Opus.encode can only handle FORMAT_8_BITS and FORMAT_16_BITS.");
 
 	PackedByteArray input = p_audio->get_data();

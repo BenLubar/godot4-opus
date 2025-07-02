@@ -13,8 +13,8 @@ protected:
 public:
 	static Opus *_singleton;
 
-	godot::Error decode(const godot::PackedByteArray &p_data, godot::AudioStreamWAV *p_audio) const;
-	godot::PackedByteArray encode(godot::AudioStreamWAV *p_audio) const;
+	godot::Error decode(const godot::PackedByteArray &p_data, const godot::Ref<godot::AudioStreamWAV> &p_audio) const;
+	godot::PackedByteArray encode(const godot::Ref<godot::AudioStreamWAV> &p_audio) const;
 };
 
 void initialize_gdopus_module(godot::ModuleInitializationLevel p_level);
