@@ -2,168 +2,108 @@ name: Build GDExtension
 on:
   workflow_call:
   push:
+  pull_request:
+  merge_group:
 
 jobs:
   build:
     strategy:
       fail-fast: false
       matrix:
-        include:
-          #- platform: linux
-          #  arch: x86_32
-          #  target-type: template_debug
-          #  os: ubuntu-20.04
-          - platform: linux
-            arch: x86_64
-            target-type: template_debug
-            os: ubuntu-20.04
-          - platform: linux
-            arch: arm32
-            target-type: template_debug
-            os: ubuntu-20.04
-          #- platform: linux
-          #  arch: arm64
-          #  target-type: template_debug
-          #  os: ubuntu-20.04
-          #- platform: linux
-          #  arch: rv64
-          #  target-type: template_debug
-          #  os: ubuntu-20.04
-          - platform: windows
-            arch: x86_32
-            target-type: template_debug
-            os: windows-2019
-          - platform: windows
-            arch: x86_64
-            target-type: template_debug
-            os: windows-2019
-          - platform: windows
-            arch: arm64
-            target-type: template_debug
-            os: windows-2019
-          - platform: macos
-            arch: universal
-            target-type: template_debug
-            os: macos-latest
-          - platform: android
-            arch: x86_64
-            target-type: template_debug
-            os: ubuntu-20.04
-          - platform: android
-            arch: arm64
-            target-type: template_debug
-            os: ubuntu-20.04
-          - platform: ios
-            arch: arm64
-            target-type: template_debug
-            os: macos-latest
-          - platform: web
-            arch: wasm32 threads=yes
-            target-type: template_debug
-            os: ubuntu-20.04
-          - platform: web
-            arch: wasm32 threads=no
-            target-type: template_debug
-            os: ubuntu-20.04
-          #- platform: linux
-          #  arch: x86_32
-          #  target-type: template_release
-          #  os: ubuntu-20.04
-          - platform: linux
-            arch: x86_64
-            target-type: template_release
-            os: ubuntu-20.04
-          - platform: linux
-            arch: arm32
-            target-type: template_release
-            os: ubuntu-20.04
-          #- platform: linux
-          #  arch: arm64
-          #  target-type: template_release
-          #  os: ubuntu-20.04
-          #- platform: linux
-          #  arch: rv64
-          #  target-type: template_release
-          #  os: ubuntu-20.04
-          - platform: windows
-            arch: x86_32
-            target-type: template_release
-            os: windows-2019
-          - platform: windows
-            arch: x86_64
-            target-type: template_release
-            os: windows-2019
-          - platform: windows
-            arch: arm64
-            target-type: template_release
-            os: windows-2019
-          - platform: macos
-            arch: universal
-            target-type: template_release
-            os: macos-latest
-          - platform: android
-            arch: x86_64
-            target-type: template_release
-            os: ubuntu-20.04
-          - platform: android
-            arch: arm64
-            target-type: template_release
-            os: ubuntu-20.04
-          - platform: ios
-            arch: arm64
-            target-type: template_release
-            os: macos-latest
-          - platform: web
-            arch: wasm32 threads=yes
-            target-type: template_release
-            os: ubuntu-20.04
-          - platform: web
-            arch: wasm32 threads=no
-            target-type: template_release
-            os: ubuntu-20.04
+        # A build is made for every possible combination of parameters
+        # You can add or remove entries from the arrays of each parameter to customize which builds you want to run
+        # See https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/running-variations-of-jobs-in-a-workflow
+        target:
+          [
+            { platform: linux, arch: x86_64, os: ubuntu-22.04 },
+            { platform: linux, arch: x86_32, os: ubuntu-22.04 },
+            { platform: linux, arch: arm64, os: ubuntu-22.04-arm },
+            { platform: linux, arch: arm32, os: ubuntu-22.04-arm },
+            { platform: windows, arch: x86_64, os: windows-latest },
+            { platform: windows, arch: x86_32, os: windows-latest },
+            { platform: windows, arch: arm64, os: windows-latest },
+            { platform: macos, arch: universal, os: macos-latest },
+            { platform: android, arch: x86_64, os: ubuntu-22.04 },
+            { platform: android, arch: x86_32, os: ubuntu-22.04 },
+            { platform: android, arch: arm64, os: ubuntu-22.04 },
+            { platform: android, arch: arm32, os: ubuntu-22.04 },
+            { platform: ios, arch: arm64, os: macos-latest },
+            { platform: web, arch: wasm32, os: ubuntu-22.04 },
+          ]
+        target-type: [template_debug, template_release]
+        float-precision: [single, double]
 
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.target.os }}
     steps:
+      # Clone this repository
       - name: Checkout
         uses: actions/checkout@v4
         with:
           submodules: true
-          fetch-depth: 0
-      - name: 🔗 GDExtension Build
-        uses: godotengine/godot-cpp-template/.github/actions/build@main
+
+      # Lint
+      #- name: Setup clang-format
+      #  shell: bash
+      #  run: |
+      #    python -m pip install clang-format
+      #- name: Run clang-format
+      #  shell: bash
+      #  run: |
+      #    clang-format src/** --dry-run --Werror
+
+      # Add linux x86_32 toolchain
+      - name: Install multilib support
+        if: ${{ matrix.target.platform == 'linux' && matrix.target.arch == 'x86_32' }}
+        run: |
+          sudo apt-get update && sudo apt-get install -y gcc-multilib g++-multilib
+
+      # Setup dependencies
+      - name: Setup godot-cpp
+        uses: ./godot-cpp/.github/actions/setup-godot-cpp
         with:
-          platform: ${{ matrix.platform }}
-          arch: ${{ matrix.arch }}
-          build-target-type: ${{ matrix.target-type }}
-      - name: Mac Sign
-        if: ${{ matrix.platform == 'macos' && env.APPLE_CERT_BASE64 }}
+          platform: ${{ matrix.target.platform }}
+          em-version: 3.1.62
+
+      # Build GDExtension (with caches)
+
+      - name: Restore .scons_cache
+        uses: ./godot-cpp/.github/actions/godot-cache-restore
+        with:
+          scons-cache: ${{ github.workspace }}/.scons-cache/
+          cache-name: ${{ matrix.target.platform }}_${{ matrix.target.arch }}_${{ matrix.float-precision }}_${{ matrix.target-type }}
+
+      - name: Build GDExtension Debug Build
+        shell: sh
         env:
-          APPLE_CERT_BASE64: ${{ secrets.APPLE_CERT_BASE64 }}
-        uses: godotengine/godot-cpp-template/.github/actions/sign@main
+          SCONS_CACHE: ${{ github.workspace }}/.scons-cache/
+        run: |
+          scons target=${{ matrix.target-type }} platform=${{ matrix.target.platform }} arch=${{ matrix.target.arch }} precision=${{ matrix.float-precision }}
+
+      - name: Save .scons_cache
+        uses: ./godot-cpp/.github/actions/godot-cache-save
         with:
-          FRAMEWORK_PATH: bin/macos/macos.framework
-          APPLE_CERT_BASE64: ${{ secrets.APPLE_CERT_BASE64 }}
-          APPLE_CERT_PASSWORD: ${{ secrets.APPLE_CERT_PASSWORD }}
-          APPLE_DEV_PASSWORD: ${{ secrets.APPLE_DEV_PASSWORD }}
-          APPLE_DEV_ID: ${{ secrets.APPLE_DEV_ID }}
-          APPLE_DEV_TEAM_ID: ${{ secrets.APPLE_DEV_TEAM_ID }}
-          APPLE_DEV_APP_ID: ${{ secrets.APPLE_DEV_APP_ID }}
+          scons-cache: ${{ github.workspace }}/.scons-cache/
+          cache-name: ${{ matrix.target.platform }}_${{ matrix.target.arch }}_${{ matrix.float-precision }}_${{ matrix.target-type }}
+
+      # Clean up compilation files
       - name: Windows - Delete compilation files
-        if: ${{ matrix.platform == 'windows' }}
+        if: ${{ matrix.target.platform == 'windows' }}
         shell: pwsh
         run: |
-          Remove-Item bin/windows/* -Include *.exp,*.lib,*.pdb -Force
+          Remove-Item bin/* -Include *.exp,*.lib,*.pdb -Force
+
+      # Upload the build
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: godot4-opus-${{ matrix.platform }}-${{ matrix.arch }}-${{ matrix.target-type }}
+          name: godot4-opus-${{ matrix.target.platform }}-${{ matrix.target.arch }}-${{ matrix.float-precision }}-${{ matrix.target-type }}
           path: |
             ${{ github.workspace }}/bin/**
 
   # Merges all the build artifacts together into a single godot4-opus artifact.
   # If you comment out this step, all the builds will be uploaded individually.
   merge:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs: build
     steps:
       - name: Merge Artifacts
