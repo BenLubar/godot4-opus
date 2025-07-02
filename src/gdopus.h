@@ -1,14 +1,11 @@
-#ifndef GDOPUS_CLASS_H
-#define GDOPUS_CLASS_H
+#pragma once
 
 #include <godot_cpp/classes/object.hpp>
 #include <godot_cpp/variant/packed_byte_array.hpp>
 #include <godot_cpp/classes/audio_stream_wav.hpp>
 
-using namespace godot;
-
-class Opus : public Object {
-	GDCLASS(Opus, Object);
+class Opus : public godot::Object {
+	GDCLASS(Opus, godot::Object);
 
 protected:
 	static void _bind_methods();
@@ -16,9 +13,9 @@ protected:
 public:
 	static Opus *_singleton;
 
-	Error decode(const PackedByteArray &p_data, AudioStreamWAV *p_audio) const;
-	PackedByteArray encode(AudioStreamWAV *p_audio) const;
+	godot::Error decode(const godot::PackedByteArray &p_data, godot::AudioStreamWAV *p_audio) const;
+	godot::PackedByteArray encode(godot::AudioStreamWAV *p_audio) const;
 };
 
-
-#endif // GDOPUS_CLASS_H
+void initialize_gdopus_module(ModuleInitializationLevel p_level);
+void uninitialize_gdopus_module(ModuleInitializationLevel p_level);
