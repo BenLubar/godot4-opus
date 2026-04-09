@@ -1,6 +1,6 @@
-#include "gdopus.h"
-
 #include "opusenc.h"
+
+#include "gdopus.h"
 
 using namespace godot;
 
@@ -18,7 +18,7 @@ static int close_opus(void *user_data) {
 	return 0;
 }
 
-const static OpusEncCallbacks callbacks = {
+static const OpusEncCallbacks callbacks = {
 	&write_opus,
 	&close_opus,
 };
@@ -38,7 +38,7 @@ PackedByteArray Opus::encode(const Ref<godot::AudioStreamWAV> &p_audio) const {
 		// easy way to rescale 8 to 16 bit: just repeat every byte.
 		for (int64_t i = 0; i < input.size(); i++) {
 			auxiliary[i * 2] = input[i];
-			auxiliary[i * 2 + 1] = input[i];
+			auxiliary[(i * 2) + 1] = input[i];
 		}
 		pinput = &auxiliary;
 	} else {

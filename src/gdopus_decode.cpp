@@ -1,6 +1,6 @@
-#include "gdopus.h"
-
 #include "opusfile.h"
+
+#include "gdopus.h"
 
 using namespace godot;
 
@@ -23,16 +23,14 @@ Error Opus::decode(const PackedByteArray &p_data, const Ref<godot::AudioStreamWA
 	PackedByteArray buf;
 	buf.resize(samples_per_buffer * 2);
 
-	while (int sample_count = is_stereo ?
-			op_read_stereo(file, reinterpret_cast<opus_int16 *>(buf.ptrw()), samples_per_buffer) :
-			op_read(file, reinterpret_cast<opus_int16 *>(buf.ptrw()), samples_per_buffer, nullptr)) {
+	while (int sample_count = is_stereo ? op_read_stereo(file, reinterpret_cast<opus_int16 *>(buf.ptrw()), samples_per_buffer) : op_read(file, reinterpret_cast<opus_int16 *>(buf.ptrw()), samples_per_buffer, nullptr)) {
 		if (sample_count < 0) {
 			op_free(file);
 
 			ERR_FAIL_V_MSG(ERR_FILE_CORRUPT, vformat("Cannot parse Opus data. (%s returned error %d)", is_stereo ? "op_read_stereo" : "op_read", sample_count));
 		}
 
-		pcm.append_array(buf.slice(0, sample_count * channel_count * 2));
+		pcm.append_array(buf.slice(0, static_cast<int64_t>(sample_count) * channel_count * 2));
 	}
 
 	op_free(file);
